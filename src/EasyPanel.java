@@ -123,7 +123,7 @@ public class EasyPanel extends BaseGamePanel {
         walls.add(new Rectangle(455, 280, 23, 100));
         walls.add(new Rectangle(455, 280, 100, 23));
 
-        //slanted Barriers (polygons)
+        //slanted barriers (polygons)
         walls.add(new Polygon(
                 new int[] { 400, 415, 345, 330 },
                 new int[] { 195, 180, 113, 128 },
@@ -187,7 +187,7 @@ public class EasyPanel extends BaseGamePanel {
             }
         }
 
-        //draw Player
+        //draw player
         if (player != null) {
             player.draw(g);
         }
@@ -303,4 +303,5 @@ public class EasyPanel extends BaseGamePanel {
         }
     }
 }
+
 
