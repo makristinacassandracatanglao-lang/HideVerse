@@ -1,11 +1,11 @@
 import java.awt.*;
 import java.awt.image.*;
 import java.io.File;
+import java.util.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class HardPanel extends JPanel {
-    private static final int TILE = 45;
+public class HardPanel extends BaseGamePanel {
     private static final int GRID_W = 14; //columns
     private static final int GRID_H = 10; //rows
 
@@ -18,12 +18,39 @@ public class HardPanel extends JPanel {
     private BufferedImage leftSideImg, rightSideImg;
 
     //barrier images
-    private BufferedImage wholeBarrierImg, lBarrierImg;
+    private BufferedImage jBarrierImg;
+    private BufferedImage lBarrierLeftBottomImg;
+    private BufferedImage lBarrierLeftBottomMImg;
+    private BufferedImage wholeBarrierImg;
+    private BufferedImage wholeBarrierBigImg;
+    private BufferedImage wholeBarrierSmallImg;
+    private BufferedImage cornerBarrierImg;
+    private BufferedImage wholeBarrierSmall2Img;
+
+    //barrier container
+    private java.util.List<Barrier> barriers = new ArrayList<>();
+    private java.util.List<GameItem> items = new ArrayList<>();
+
+    private static final double TP_SCALE = 0.75;
+    private static final double SB_SCALE = 0.50;
+    private static final double SP_SCALE = 0.75;
+
+    private ImageIcon telepadImg;
+    private ImageIcon smokeBombImg;
+    private ImageIcon speedPadImg;
+
+    private static final int SPEEDPAD_UP = 21;
+    private static final int SPEEDPAD_DOWN = 22;
+    private static final int SPEEDPAD_RIGHT = 24;
+
+    private static final int TELEPAD = 30;
+    private static final int SMOKEBOMB = 31;
 
     public HardPanel() {
+        super();
         setPreferredSize(new Dimension(GRID_W * TILE, GRID_H * TILE));
-        Color TORQUOISE = new Color(60, 184, 152);
-        setBackground(TORQUOISE);
+        Color DARK_BLUE = new Color(6, 23, 44);
+        setBackground(DARK_BLUE);
 
         try {
             //load corners
@@ -39,18 +66,146 @@ public class HardPanel extends JPanel {
             rightSideImg = ImageIO.read(new File("assets/side_wall_r.png"));
 
             //load barriers
+            jBarrierImg = ImageIO.read(new File("assets/j_barrier.png"));
+            lBarrierLeftBottomImg = ImageIO.read(new File("assets/l_barrier_leftBottom.png"));
+            lBarrierLeftBottomMImg = ImageIO.read(new File("assets/l_barrier_leftBottomM.png"));
             wholeBarrierImg = ImageIO.read(new File("assets/whole_barrier.png"));
-            lBarrierImg = ImageIO.read(new File("assets/l_barrier.png"));
-        } 
-        catch (Exception e) {
-            System.out.println("Error loading wall images: " + e.getMessage());
+            wholeBarrierBigImg = ImageIO.read(new File("assets/whole_barrier_big.png"));
+            wholeBarrierSmallImg = ImageIO.read(new File("assets/whole_barrier_small.png"));
+            cornerBarrierImg = ImageIO.read(new File("assets/corner_big.png"));
+            wholeBarrierSmall2Img = ImageIO.read(new File("assets/whole_barrier_small2.png"));
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR: Could not load static images (e.g., walls).");
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading wall/barrier images: " + e.getMessage(),
+                    "Asset Loading Error", JOptionPane.ERROR_MESSAGE);
         }
+
+        //visual barriers (images)
+        barriers.add(new Barrier(180, -7, wholeBarrierSmallImg, "whole_small"));
+        barriers.add(new Barrier(330, 23, jBarrierImg, "j_barrier"));
+        barriers.add(new Barrier(24, 173, lBarrierLeftBottomImg, "l_leftBottom"));
+        barriers.add(new Barrier(190, 326, lBarrierLeftBottomMImg, "l_leftBottomM"));
+        barriers.add(new Barrier(10, 23, wholeBarrierImg, "whole_medium"));
+        barriers.add(new Barrier(110, 90, wholeBarrierBigImg, "whole_big"));
+        barriers.add(new Barrier(290, 227, cornerBarrierImg, "corner_barrier"));
+        barriers.add(new Barrier(507, 227, wholeBarrierSmall2Img, "whole_barrier_small_2"));
+
+        telepadImg = new ImageIcon("assets/teleport_pad.gif");
+        smokeBombImg = new ImageIcon("assets/smoke_bomb.gif");
+        speedPadImg = new ImageIcon("assets/speed_pad.gif");
+
+        //speed pads
+        items.add(new GameItem(250, 250, SPEEDPAD_UP));
+        items.add(new GameItem(160, 150, SPEEDPAD_DOWN));
+        items.add(new GameItem(515, 280, SPEEDPAD_UP));
+        items.add(new GameItem(370, 195, SPEEDPAD_RIGHT));
+
+        //teleport pads
+        items.add(new GameItem(55, 50, TELEPAD));
+        items.add(new GameItem(500, 50, TELEPAD));
+        items.add(new GameItem(335, 390, TELEPAD));
+        items.add(new GameItem(565, 390, TELEPAD));
+
+        //smoke bombs
+        items.add(new GameItem(65, 225, SMOKEBOMB));
+        items.add(new GameItem(580, 50, SMOKEBOMB));
+        items.add(new GameItem(440, 280, SMOKEBOMB));
+
+        //initialize Player
+        //format: new Player(startX, startY, size, speed)
+        player = new Player(250, 120, 30, 5);
+    }
+
+    @Override
+    protected void setupWalls() {
+        //frame boundaries (top, bottom, left, right)
+        walls.add(new Rectangle(0, 0, 630, 21));
+        walls.add(new Rectangle(0, 427, 630, 23));
+        walls.add(new Rectangle(0, 0, 23, 430));
+        walls.add(new Rectangle(608, 0, 23, 430));
+
+        //barrier walls (manual coordinates)
+        walls.add(new Rectangle(259, 11, 17, 80)); //whole_barrier_small
+        walls.add(new Rectangle(330, 74, 21, 87)); //j_barrier
+        walls.add(new Rectangle(351, 74, 200, 21));
+        walls.add(new Rectangle(530, 23, 21, 140));
+        walls.add(new Rectangle(22, 174, 100, 21)); //l_leftBottom
+        walls.add(new Rectangle(102, 174, 19, 197));
+        walls.add(new Rectangle(190, 329, 197, 19)); //l_leftBottomM
+        walls.add(new Rectangle(368, 329, 19, 100));
+        walls.add(new Rectangle(87, 22, 22, 100)); //whole_barrier_medium
+        walls.add(new Rectangle(185, 90, 22, 170)); //whole_barrier_big
+        walls.add(new Rectangle(290, 227, 200, 22)); //corner_barrier_big
+        walls.add(new Rectangle(469, 227, 20, 200)); //corner_barrier_small
+        walls.add(new Rectangle(539, 227, 64, 21)); //whole_barrier_small_2
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        drawFrame(g);
+
+        //draw items
+        for (GameItem item : items) {
+            switch (item.type) {
+                case TELEPAD:
+                    if (telepadImg != null) {
+                        int scaledWidth = (int) (telepadImg.getIconWidth() * TP_SCALE);
+                        int scaledHeight = (int) (telepadImg.getIconHeight() * TP_SCALE);
+                        int objX = item.x - scaledWidth / 2;
+                        int objY = item.y - scaledHeight / 2;
+                        g.drawImage(telepadImg.getImage(), objX, objY, scaledWidth, scaledHeight, this);
+                    }
+                    break;
+                case SMOKEBOMB:
+                    if (smokeBombImg != null) {
+                        int scaledWidth = (int) (smokeBombImg.getIconWidth() * SB_SCALE);
+                        int scaledHeight = (int) (smokeBombImg.getIconHeight() * SB_SCALE);
+                        int objX = item.x - scaledWidth / 2;
+                        int objY = item.y - scaledHeight / 2;
+                        g.drawImage(smokeBombImg.getImage(), objX, objY, scaledWidth, scaledHeight, this);
+                    }
+                    break;
+                case SPEEDPAD_UP:
+                    drawRotatedSpeedPad(g, item.x, item.y, Math.toRadians(90));
+                    break;
+                case SPEEDPAD_DOWN:
+                    drawRotatedSpeedPad(g, item.x, item.y, Math.toRadians(-90));
+                    break;
+                case SPEEDPAD_RIGHT:
+                    drawRotatedSpeedPad(g, item.x, item.y, Math.toRadians(180));
+                    break;
+            }
+        }
+
+        //draw Player
+        if (player != null) {
+            player.draw(g);
+        }
+    }
+
+    private void drawRotatedSpeedPad(Graphics g, int pixelX, int pixelY, double angleRad) {
+        if (speedPadImg == null || speedPadImg.getIconWidth() <= 0)
+            return;
+
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+        int origW = speedPadImg.getIconWidth();
+        int origH = speedPadImg.getIconHeight();
+        int padW = (int) (origW * SP_SCALE);
+        int padH = (int) (origH * SP_SCALE);
+
+        g2.translate(pixelX, pixelY);
+        g2.rotate(angleRad);
+        g2.drawImage(speedPadImg.getImage(), -padW / 2, -padH / 2, padW, padH, this);
+
+        g2.dispose();
+    }
+
+    private void drawFrame(Graphics g) {
         //top row
         for (int x = 0; x < GRID_W; x++) {
             int y = 0;
@@ -89,6 +244,45 @@ public class HardPanel extends JPanel {
             }
         }
 
-        
+        //draw barriers
+        for (Barrier b : barriers) {
+            b.draw(g);
+        }
+    }
+
+    //barrier helper class
+    private static class Barrier {
+        int x, y;
+        BufferedImage img;
+        String name;
+
+        Barrier(int x, int y, BufferedImage img, String name) {
+            this.x = x;
+            this.y = y;
+            this.img = img;
+            this.name = name;
+        }
+
+        void draw(Graphics g) {
+            if (img != null) {
+                g.drawImage(img, x, y, null);
+            } else {
+                g.setColor(Color.MAGENTA);
+                g.fillRect(x, y, 40, 20);
+                g.setColor(Color.BLACK);
+                g.drawString(name, x + 2, y + 12);
+            }
+        }
+    }
+
+    private static class GameItem {
+        int x, y;
+        int type;
+
+        GameItem(int x, int y, int type) {
+            this.x = x;
+            this.y = y;
+            this.type = type;
+        }
     }
 }
