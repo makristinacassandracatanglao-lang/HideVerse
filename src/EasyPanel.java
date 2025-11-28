@@ -6,34 +6,29 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class EasyPanel extends BaseGamePanel {
-    private static final int GRID_W = 14; // columns
-    private static final int GRID_H = 10; // rows
+    private static final int GRID_W = 14; //columns
+    private static final int GRID_H = 10; //rows
 
-    // scale for the GIFs
+    //scale for the GIFs
     private static final double TP_SCALE = 0.75;
     private static final double SB_SCALE = 0.50;
     private static final double SP_SCALE = 0.75;
 
-    // Images for the outer frame
     private BufferedImage topLeftCornerImg, topRightCornerImg;
     private BufferedImage bottomLeftCornerImg, bottomRightCornerImg;
 
     private BufferedImage topSideImg, bottomSideImg;
     private BufferedImage leftSideImg, rightSideImg;
 
-    // Image for your 4 objects
-    private BufferedImage cornerImgLT; // left-top barrier
-    private BufferedImage cornerImgRT; // right-top barrier
-    private BufferedImage cornerImgLB; // left-bottom barrier
-    private BufferedImage cornerImgRB; // right-bottom barrier
-
-    // Image for slant barrier + 4 rotated variants
-    private BufferedImage slantBarrierLR, slantBarrierRL;
+    private BufferedImage cornerImgLT; //left-top barrier
+    private BufferedImage cornerImgRT; //right-top barrier
+    private BufferedImage cornerImgLB; //left-bottom barrier
+    private BufferedImage cornerImgRB; //right-bottom barrier
+    private BufferedImage slantBarrierLR, slantBarrierRL; //slant barrier
 
     private java.util.List<Barrier> barriers = new ArrayList<>();
     private java.util.List<GameItem> items = new ArrayList<>();
 
-    // Use ImageIcon for GIFs to support animation
     private ImageIcon telepadImg;
     private ImageIcon smokeBombImg;
     private ImageIcon speedPadImg;
@@ -47,30 +42,29 @@ public class EasyPanel extends BaseGamePanel {
     private static final int SMOKEBOMB = 31;
 
     public EasyPanel() {
-        super(); // Calls BaseGamePanel constructor
+        super();
         setPreferredSize(new Dimension(GRID_W * TILE, GRID_H * TILE));
         Color DARK_BLUE = new Color(6, 23, 44);
         setBackground(DARK_BLUE);
 
         try {
-            // load corners
+            //load corners
             topLeftCornerImg = ImageIO.read(new File("assets/corner_wall.png"));
             topRightCornerImg = ImageIO.read(new File("assets/corner_wall_2.png"));
             bottomLeftCornerImg = ImageIO.read(new File("assets/corner_wall_3.png"));
             bottomRightCornerImg = ImageIO.read(new File("assets/corner_wall_4.png"));
 
-            // load sides
+            //load sides
             topSideImg = ImageIO.read(new File("assets/side_wall.png"));
             bottomSideImg = ImageIO.read(new File("assets/side_wall_d.png"));
             leftSideImg = ImageIO.read(new File("assets/side_wall_l.png"));
             rightSideImg = ImageIO.read(new File("assets/side_wall_r.png"));
 
-            // load barriers
+            //load barriers
             cornerImgLT = ImageIO.read(new File("assets/corner_leftTop.png"));
             cornerImgRT = ImageIO.read(new File("assets/corner_rightTop.png"));
             cornerImgLB = ImageIO.read(new File("assets/corner_leftBottom.png"));
             cornerImgRB = ImageIO.read(new File("assets/corner_rightBottom.png"));
-
             slantBarrierLR = ImageIO.read(new File("assets/slant_barrier_1.png"));
             slantBarrierRL = ImageIO.read(new File("assets/slant_barrier_2.png"));
         } catch (Exception e) {
@@ -89,38 +83,37 @@ public class EasyPanel extends BaseGamePanel {
         barriers.add(new Barrier(210, 260, slantBarrierRL, "slantUL"));
         barriers.add(new Barrier(210, 110, slantBarrierLR, "slantUR"));
 
-        // Load GIFs using ImageIcon
         telepadImg = new ImageIcon("assets/teleport_pad.gif");
         smokeBombImg = new ImageIcon("assets/smoke_bomb.gif");
         speedPadImg = new ImageIcon("assets/speed_pad.gif");
 
-        // Speed Pads
+        //speed pads
         items.add(new GameItem(580, 300, SPEEDPAD_UP));
         items.add(new GameItem(50, 150, SPEEDPAD_DOWN));
         items.add(new GameItem(420, 230, SPEEDPAD_RIGHT));
         items.add(new GameItem(210, 230, SPEEDPAD_LEFT));
 
-        // Telepads
+        //teleport pads
         items.add(new GameItem(110, 110, TELEPAD));
         items.add(new GameItem(520, 340, TELEPAD));
 
-        // Smoke Bombs
+        //smoke bombs
         items.add(new GameItem(110, 340, SMOKEBOMB));
         items.add(new GameItem(520, 110, SMOKEBOMB));
 
-        // Initialize Player
+        //initialize player
         player = new Player(300, 200, 30, 5);
     }
 
     @Override
     protected void setupWalls() {
-        // 1. Frame Boundaries (Top, Bottom, Left, Right)
+        //frame boundaries (top, bottom, left, right)
         walls.add(new Rectangle(0, 0, 630, 21));
         walls.add(new Rectangle(0, 427, 630, 23));
         walls.add(new Rectangle(0, 0, 23, 430));
         walls.add(new Rectangle(608, 0, 23, 430));
 
-        // Corner Barriers (L-shapes)
+        //corner barriers (L-shapes)
         walls.add(new Rectangle(70, 147, 100, 23));
         walls.add(new Rectangle(145, 70, 23, 100));
         walls.add(new Rectangle(455, 70, 23, 100));
@@ -130,7 +123,7 @@ public class EasyPanel extends BaseGamePanel {
         walls.add(new Rectangle(455, 280, 23, 100));
         walls.add(new Rectangle(455, 280, 100, 23));
 
-        // Slanted Barriers (Polygons)
+        //slanted Barriers (polygons)
         walls.add(new Polygon(
                 new int[] { 400, 415, 345, 330 },
                 new int[] { 195, 180, 113, 128 },
@@ -158,7 +151,7 @@ public class EasyPanel extends BaseGamePanel {
 
         drawFrame(g);
 
-        // Draw items
+        //draw items
         for (GameItem item : items) {
             switch (item.type) {
                 case TELEPAD:
@@ -194,7 +187,7 @@ public class EasyPanel extends BaseGamePanel {
             }
         }
 
-        // Draw Player
+        //draw Player
         if (player != null) {
             player.draw(g);
         }
@@ -220,7 +213,7 @@ public class EasyPanel extends BaseGamePanel {
     }
 
     private void drawFrame(Graphics g) {
-        // top row
+        //top row
         for (int x = 0; x < GRID_W; x++) {
             int y = 0;
             if (x == 0 && topLeftCornerImg != null) {
@@ -232,7 +225,7 @@ public class EasyPanel extends BaseGamePanel {
             }
         }
 
-        // bottom row
+        //bottom row
         for (int x = 0; x < GRID_W; x++) {
             int y = GRID_H - 1;
             if (x == 0 && bottomLeftCornerImg != null) {
@@ -244,21 +237,21 @@ public class EasyPanel extends BaseGamePanel {
             }
         }
 
-        // left side (skip corners)
+        //left side (skip corners)
         for (int y = 1; y < GRID_H - 1; y++) {
             if (leftSideImg != null) {
                 g.drawImage(leftSideImg, 0, y * TILE, TILE, TILE, null);
             }
         }
 
-        // right side (skip corners)
+        //right side (skip corners)
         for (int y = 1; y < GRID_H - 1; y++) {
             if (rightSideImg != null) {
                 g.drawImage(rightSideImg, (GRID_W - 1) * TILE, y * TILE, TILE, TILE, null);
             }
         }
 
-        // draw barriers
+        //draw barriers
         for (Barrier b : barriers) {
             b.draw(g);
         }
@@ -310,3 +303,4 @@ public class EasyPanel extends BaseGamePanel {
         }
     }
 }
+
