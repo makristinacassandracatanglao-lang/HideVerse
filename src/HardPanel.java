@@ -112,8 +112,7 @@ public class HardPanel extends BaseGamePanel {
         items.add(new GameItem(580, 50, SMOKEBOMB));
         items.add(new GameItem(440, 280, SMOKEBOMB));
 
-        //initialize Player
-        //format: new Player(startX, startY, size, speed)
+        //initialize player
         player = new Player(250, 120, 30, 5);
     }
 
@@ -180,7 +179,7 @@ public class HardPanel extends BaseGamePanel {
             }
         }
 
-        //draw Player
+        //draw player
         if (player != null) {
             player.draw(g);
         }
@@ -286,3 +285,4 @@ public class HardPanel extends BaseGamePanel {
         }
     }
 }
+
