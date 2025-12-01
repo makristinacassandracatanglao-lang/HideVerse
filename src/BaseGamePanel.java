@@ -11,7 +11,7 @@ public abstract class BaseGamePanel extends JPanel {
     public BaseGamePanel() {
         setFocusable(true);
 
-        // Ensure focus when panel is shown
+        //ensures focus when panel is shown
         addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorAdded(javax.swing.event.AncestorEvent event) {
                 requestFocusInWindow();
@@ -68,9 +68,6 @@ public abstract class BaseGamePanel extends JPanel {
         int nextX = player.x + dx;
         int nextY = player.y + dy;
 
-        // System.out.println("Attempting move: dx=" + dx + ", dy=" + dy + " to (" +
-        // nextX + "," + nextY + ")");
-
         if (!checkCollision(nextX, nextY)) {
             player.x = nextX;
             player.y = nextY;
@@ -87,10 +84,9 @@ public abstract class BaseGamePanel extends JPanel {
 
         Rectangle nextBounds = player.getBounds(nextX, nextY);
 
-        // Check against manual walls
+        //check against manual walls
         for (Shape wall : walls) {
             if (wall.intersects(nextBounds)) {
-                // System.out.println("Collision with Wall: " + wall);
                 return true;
             }
         }
@@ -98,3 +94,4 @@ public abstract class BaseGamePanel extends JPanel {
         return false;
     }
 }
+
