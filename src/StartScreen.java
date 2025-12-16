@@ -6,34 +6,33 @@ public class StartScreen extends JPanel {
     private Image bgImage;
 
     public StartScreen(Game game) {
-        setLayout(new GridBagLayout()); // Use GridBagLayout for centering
+        setLayout(new GridBagLayout()); //use GridBagLayout for centering
 
-        // Load Background Image
+        //load background image
         ImageIcon icon = new ImageIcon("assets/new game.png");
         if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
             bgImage = icon.getImage();
         } else {
             System.err.println("Error loading background image: assets/new game.png");
-            setBackground(new Color(9, 33, 60)); // Fallback color
+            setBackground(new Color(9, 33, 60)); //fallback color
         }
 
-        // Create Buttons
+        //create buttons
         JButton startBtn = createButton("START", "assets/start.png");
         JButton exitBtn = createButton("EXIT", "assets/exit.png");
 
-        // Add Actions
+        //add actions
         startBtn.addActionListener(e -> game.showLevelSelection());
         exitBtn.addActionListener(e -> System.exit(0));
 
-        // Layout
+        //layout
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(10, 0, 10, 0); // Vertical spacing
+        gbc.insets = new Insets(10, 0, 10, 0); //vertical spacing
 
-        // Move buttons lower
         gbc.gridy = 1;
-        gbc.weighty = 1.0; // Push to bottom half
+        gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.SOUTH;
 
         JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 0, 20));
@@ -41,7 +40,7 @@ public class StartScreen extends JPanel {
         buttonPanel.add(startBtn);
         buttonPanel.add(exitBtn);
 
-        // Adjust padding to move it up from the very bottom
+        //adjust padding to move it up from the very bottom
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 100, 0));
 
         add(buttonPanel, gbc);
@@ -52,11 +51,11 @@ public class StartScreen extends JPanel {
         ImageIcon icon = new ImageIcon(imagePath);
 
         if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
-            // Image Button
+            //image button
             btn = new JButton(icon);
             btn.setBorder(BorderFactory.createEmptyBorder());
         } else {
-            // Text Button Fallback
+            //text button fallback
             btn = new JButton(text);
             btn.setFont(new Font("Arial", Font.BOLD, 24));
             btn.setForeground(Color.WHITE);
@@ -68,15 +67,15 @@ public class StartScreen extends JPanel {
 
         btn.setFocusPainted(false);
         btn.setContentAreaFilled(false);
-        btn.setOpaque(false); // Make sure transparent parts of image work
+        btn.setOpaque(false);
 
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover Effect
+        //hover Effect
         btn.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
-                    // No border for image buttons, just cursor change
+                    //no border for image buttons, just cursor change
                 } else {
                     btn.setBackground(new Color(255, 255, 255, 50));
                     btn.setBorder(BorderFactory.createCompoundBorder(
@@ -110,3 +109,4 @@ public class StartScreen extends JPanel {
         }
     }
 }
+
