@@ -12,16 +12,16 @@ public class CharacterSelectionPanel extends JPanel {
     public CharacterSelectionPanel(Game game) {
         this.game = game;
         setLayout(new BorderLayout());
-        setBackground(new Color(9, 33, 60)); // TEAL
+        setBackground(new Color(9, 33, 60)); //TEAL
 
-        // Title
+        //title
         JLabel title = new JLabel("CHOOSE YOUR CHARACTER", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 30));
         title.setForeground(Color.WHITE);
         title.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
         add(title, BorderLayout.NORTH);
 
-        // Character Grid
+        //character grid
         JPanel grid = new JPanel(new GridLayout(2, 3, 20, 20));
         grid.setOpaque(false);
         grid.setBorder(BorderFactory.createEmptyBorder(20, 50, 50, 50));
@@ -35,11 +35,11 @@ public class CharacterSelectionPanel extends JPanel {
     }
 
     private JButton createCharacterButton(String assetPath) {
-        // Use PNG for static display in selection menu
+        //use PNG for static display in selection menu
         String pngPath = assetPath.replace(".gif", ".png");
         ImageIcon icon = new ImageIcon(pngPath);
 
-        // Scale up for visibility
+        //scale up for visibility
         Image img = icon.getImage().getScaledInstance(64, 64, Image.SCALE_DEFAULT);
         JButton btn = new JButton(new ImageIcon(img));
 
@@ -52,7 +52,7 @@ public class CharacterSelectionPanel extends JPanel {
             game.startGame(assetPath);
         });
 
-        // Hover effect
+        //hover effect
         btn.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 btn.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 4));
@@ -66,3 +66,4 @@ public class CharacterSelectionPanel extends JPanel {
         return btn;
     }
 }
+
