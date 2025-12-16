@@ -71,7 +71,7 @@ public class StartScreen extends JPanel {
 
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        //hover Effect
+        //hover effect
         btn.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
@@ -109,4 +109,5 @@ public class StartScreen extends JPanel {
         }
     }
 }
+
 
