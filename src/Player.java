@@ -5,10 +5,10 @@ public class Player {
     public int x, y;
     public int width, height;
     public int speed;
-    public int originalSpeed; // Base speed for resetting after boost
-    public long speedBoostEndTime; // Time when speed boost expires
-    public boolean canTeleport = true; // Prevents infinite teleport loops
-    public int smokeBombCount = 0; // Inventory for smoke bombs
+    public int originalSpeed; //base speed for resetting after boost
+    public long speedBoostEndTime; //time when speed boost expires
+    public boolean canTeleport = true; //prevents infinite teleport loops
+    public int smokeBombCount = 0; //inventory for smoke bombs
     public boolean isCaught = false;
     public Color color;
 
@@ -34,20 +34,20 @@ public class Player {
         this.width = size;
         this.height = size;
         this.speed = speed;
-        this.originalSpeed = speed; // Initialize original speed
-        this.color = Color.RED; // Default color
-        this.isBot = false; // Default to human player
+        this.originalSpeed = speed;
+        this.color = Color.RED; 
+        this.isBot = false; 
 
-        // Assign random character image
+        //assign random character image
         String assetPath = CHAR_ASSETS[(int) (Math.random() * CHAR_ASSETS.length)];
         setCharacter(assetPath);
     }
 
     public void setCharacter(String gifPath) {
-        // Load GIF for movement
+        //load GIF for movement
         this.moveImg = new ImageIcon(gifPath);
 
-        // Load PNG for idle (replace .gif with .png)
+        //load PNG for idle (replace .gif with .png)
         String pngPath = gifPath.replace(".gif", ".png");
         this.idleImg = new ImageIcon(pngPath);
     }
@@ -57,7 +57,7 @@ public class Player {
         if (role == Role.SEEKER) {
             this.color = Color.RED;
         } else {
-            this.color = Color.GREEN; // Hiders are Green
+            this.color = Color.GREEN; 
         }
     }
 
@@ -67,22 +67,19 @@ public class Player {
         if (currentImg != null) {
             g.drawImage(currentImg.getImage(), x, y, width, height, null);
         } else {
-            // Fallback to square if image fails
+            //fallback to square if image fails
             g.setColor(color);
             g.fillRect(x, y, width, height);
         }
-
-        // Draw colored border to indicate role - REMOVED per user request
-        // g.setColor(color);
-        // g.drawRect(x, y, width, height);
     }
 
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }
 
-    // Helper to get bounds for a hypothetical next position
+    //helper to get bounds for a hypothetical next position
     public Rectangle getBounds(int nextX, int nextY) {
         return new Rectangle(nextX, nextY, width, height);
     }
 }
+
