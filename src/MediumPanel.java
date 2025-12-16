@@ -6,23 +6,23 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class MediumPanel extends BaseGamePanel {
-    private static final int GRID_W = 14; // columns
-    private static final int GRID_H = 10; // rows
+    private static final int GRID_W = 14; //columns
+    private static final int GRID_H = 10; //rows
 
-    // corner images
+    //corner images
     private BufferedImage topLeftCornerImg, topRightCornerImg;
     private BufferedImage bottomLeftCornerImg, bottomRightCornerImg;
 
-    // side images
+    //side images
     private BufferedImage topSideImg, bottomSideImg;
     private BufferedImage leftSideImg, rightSideImg;
 
-    // barrier images
+    //barrier images
     private BufferedImage cornerImgLT, cornerImgRT, cornerImgLB;
     private BufferedImage openLImg, openZImg, openNImg;
 
     private java.util.List<Barrier> barriers = new ArrayList<>();
-    // items list is inherited from BaseGamePanel
+    //items list is inherited from BaseGamePanel
 
     private static final double TP_SCALE = 0.75;
     private static final double SB_SCALE = 0.50;
@@ -32,31 +32,31 @@ public class MediumPanel extends BaseGamePanel {
     private ImageIcon smokeBombImg;
     private ImageIcon speedPadImg;
 
-    // Constants inherited from BaseGamePanel
+    //constants inherited from BaseGamePanel
 
     public MediumPanel() {
-        super(); // Calls BaseGamePanel constructor
+        super(); //calls BaseGamePanel constructor
         setPreferredSize(new Dimension(GRID_W * TILE, GRID_H * TILE));
         Color DARK_BLUE = new Color(6, 23, 44);
         setBackground(DARK_BLUE);
 
-        // Set Game Duration: 4 Minutes
+        //set game duration: 4 Minutes
         this.gameDuration = 240000;
 
         try {
-            // load corners
+            //load corners
             topLeftCornerImg = ImageIO.read(new File("assets/corner_wall.png"));
             topRightCornerImg = ImageIO.read(new File("assets/corner_wall_2.png"));
             bottomLeftCornerImg = ImageIO.read(new File("assets/corner_wall_3.png"));
             bottomRightCornerImg = ImageIO.read(new File("assets/corner_wall_4.png"));
 
-            // load sides
+            //load sides
             topSideImg = ImageIO.read(new File("assets/side_wall.png"));
             bottomSideImg = ImageIO.read(new File("assets/side_wall_d.png"));
             leftSideImg = ImageIO.read(new File("assets/side_wall_l.png"));
             rightSideImg = ImageIO.read(new File("assets/side_wall_r.png"));
 
-            // load barriers
+            //load barriers
             cornerImgLT = ImageIO.read(new File("assets/corner_leftTop.png"));
             cornerImgRT = ImageIO.read(new File("assets/corner_rightTop.png"));
             cornerImgLB = ImageIO.read(new File("assets/corner_leftBottom.png"));
@@ -88,56 +88,51 @@ public class MediumPanel extends BaseGamePanel {
         if (speedPadImg.getImageLoadStatus() != MediaTracker.COMPLETE)
             System.err.println("Error loading speedPadImg");
 
-        // Initialize Player
+        //initialize player
         player = new Player(230, 30, 30, 5);
     }
 
     @Override
     protected void setupItems() {
-        // Speed Pads
+        //speed pads
         items.add(new GameItem(580, 250, SPEEDPAD_UP));
         items.add(new GameItem(50, 280, SPEEDPAD_DOWN));
         items.add(new GameItem(210, 150, SPEEDPAD_SLANTD));
         items.add(new GameItem(380, 220, SPEEDPAD_SLANTU));
 
-        // Telepads (estimated from image) - converting grid to pixel center
+        //teleport pads
         items.add(new GameItem(115, 70, TELEPAD));
         items.add(new GameItem(520, 310, TELEPAD));
 
-        // Smoke Bombs (estimated from image) - converting grid to pixel center
+        //smoke bombs
         items.add(new GameItem(220, 385, SMOKEBOMB));
         items.add(new GameItem(510, 60, SMOKEBOMB));
     }
 
     @Override
     protected void setupWalls() {
-        // 1. Frame Boundaries (Top, Bottom, Left, Right)
+        //frame boundaries (top, bottom, left, right)
         walls.add(new Rectangle(0, 0, 630, 21));
         walls.add(new Rectangle(0, 427, 630, 23));
         walls.add(new Rectangle(0, 0, 23, 430));
         walls.add(new Rectangle(608, 0, 23, 430));
 
-        // 2. Barriers (Approximate Rectangles)
-        // cornerLT (70, 23)
+        //barriers
         walls.add(new Rectangle(70, 100, 100, 23));
         walls.add(new Rectangle(146, 23, 23, 100));
 
-        // cornerRT (455, 23)
         walls.add(new Rectangle(455, 100, 100, 23));
-        walls.add(new Rectangle(455, 23, 23, 100)); // Right side of the corner
+        walls.add(new Rectangle(455, 23, 23, 100)); 
 
-        // cornerLB (175, 327)
         walls.add(new Rectangle(252, 327, 23, 100));
-        walls.add(new Rectangle(175, 327, 100, 23)); // Bottom side
+        walls.add(new Rectangle(175, 327, 100, 23));
 
-        // openL (340, 126)
         walls.add(new Rectangle(457, 240, 100, 23));
         walls.add(new Polygon(
                 new int[] { 470, 457, 360, 344 },
                 new int[] { 240, 265, 130, 143 },
                 4));
 
-        // openZ (310, 290) - Approximated with rectangles
         walls.add(new Rectangle(310, 290, 100, 23));
         walls.add(new Rectangle(463, 355, 96, 22));
         walls.add(new Polygon(
@@ -145,17 +140,16 @@ public class MediumPanel extends BaseGamePanel {
                 new int[] { 377, 355, 290, 313 },
                 4));
 
-        // openN (75, 155) - Approximated
         walls.add(new Rectangle(75, 230, 23, 100));
         walls.add(new Rectangle(253, 155, 21, 100));
-        walls.add(new Rectangle(75, 230, 193, 23)); // Cross bar
+        walls.add(new Rectangle(75, 230, 193, 23));
     }
 
     @Override
     protected void drawMap(Graphics g) {
         drawFrame(g);
 
-        // draw barriers
+        //draw barriers
         for (Barrier b : barriers) {
             b.draw(g);
         }
@@ -224,7 +218,7 @@ public class MediumPanel extends BaseGamePanel {
     }
 
     private void drawFrame(Graphics g) {
-        // top row
+        //top row
         for (int x = 0; x < GRID_W; x++) {
             int y = 0;
             if (x == 0 && topLeftCornerImg != null) {
@@ -236,7 +230,7 @@ public class MediumPanel extends BaseGamePanel {
             }
         }
 
-        // bottom row
+        //bottom row
         for (int x = 0; x < GRID_W; x++) {
             int y = GRID_H - 1;
             if (x == 0 && bottomLeftCornerImg != null) {
@@ -248,21 +242,21 @@ public class MediumPanel extends BaseGamePanel {
             }
         }
 
-        // left side (skip corners)
+        //left side (skip corners)
         for (int y = 1; y < GRID_H - 1; y++) {
             if (leftSideImg != null) {
                 g.drawImage(leftSideImg, 0, y * TILE, TILE, TILE, null);
             }
         }
 
-        // right side (skip corners)
+        //right side (skip corners)
         for (int y = 1; y < GRID_H - 1; y++) {
             if (rightSideImg != null) {
                 g.drawImage(rightSideImg, (GRID_W - 1) * TILE, y * TILE, TILE, TILE, null);
             }
         }
 
-        // draw barriers (pixel-perfect sizes and positions)
+        //draw barriers (pixel-perfect sizes and positions)
         for (Barrier b : barriers) {
             b.draw(g);
         }
@@ -282,7 +276,7 @@ public class MediumPanel extends BaseGamePanel {
     private static class Barrier {
         int x, y;
         BufferedImage img;
-        String name; // for debugging / easier adjustments
+        String name; //for debugging/easier adjustments
 
         Barrier(int x, int y, BufferedImage img, String name) {
             this.x = x;
@@ -293,9 +287,9 @@ public class MediumPanel extends BaseGamePanel {
 
         void draw(Graphics g) {
             if (img != null) {
-                g.drawImage(img, x, y, null); // draw at natural size
+                g.drawImage(img, x, y, null); 
             } else {
-                // placeholder visual if image missing
+                //placeholder visual if image missing
                 g.setColor(Color.MAGENTA);
                 g.fillRect(x, y, 40, 20);
                 g.setColor(Color.BLACK);
@@ -303,4 +297,5 @@ public class MediumPanel extends BaseGamePanel {
             }
         }
     }
+
 }
