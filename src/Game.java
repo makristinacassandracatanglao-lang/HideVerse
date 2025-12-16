@@ -46,7 +46,7 @@ public class Game extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Difficulty selected from SelectionPanel
+        //difficulty selected from SelectionPanel
         selectedDifficulty = e.getActionCommand();
         layout.show(stack, "CHAR_SELECT");
     }
@@ -76,3 +76,4 @@ public class Game extends JFrame implements ActionListener {
         SwingUtilities.invokeLater(Game::new);
     }
 }
+
